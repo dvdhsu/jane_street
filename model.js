@@ -24,6 +24,21 @@ function addPosition(symbol, price, size, dir){
     global.send(msg);
 }
 
+function getBuyPriceWithQuantityAtLeast100(symbol) {
+
+}
+
+function getSellPriceWithQuantityAtLeast100(symbol) {
+
+}
+
+function getPercentageSpread(symbol) {
+
+}
+
+function getSymbolWithSpreadAbove(percent) {
+
+}
 
 global.socket;
 global.cash;
