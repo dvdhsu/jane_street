@@ -12,7 +12,7 @@ var PORT = 25000 + parseInt(index);
 
 console.log('HOST: ' + HOST);
 console.log('PORT: ' + PORT);
-var TEAM_NAME = 'POMEGRANATE';
+var TEAM_NAME = '5HITCOMBO';
 
 console.log("PLEASE WORK");
 global.socket = new net.Socket();
