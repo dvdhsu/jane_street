@@ -4,6 +4,11 @@ var order_id = 0;
 var order_id_to_order = {};
 var prev_string = '';
 
+function min(x,y){
+	if (x < y){return x;}
+	return y;
+}
+
 function getNewOrderId(){
     order_id += 1;
     return order_id;
@@ -25,29 +30,29 @@ function addPosition(symbol, price, size, dir){
 }
 
 function getBuyPriceWithQuantityAtLeast100(symbol) {
-    var buyArray = global.book.symbol.buy;
+    var buyArray = global.book[symbol].buy;
     var buyPrice = 0;
-    for (var x in buyArray) {
+    for (x in buyArray) {
         if (x[1] >= 100) {
             buyPrice = x[0];
             break;
         }
     }
     // assert x!=0
-    return x;
+    return buyPrice;
 }
 
 function getSellPriceWithQuantityAtLeast100(symbol) {
-    var sellArray = global.book.symbol.sell;
+    var sellArray = global.book[symbol].sell;
     var sellPrice = 0;
-    for (var x in sellArray) {
+    for (x in sellArray) {
         if (x[1] >= 100) {
             sellPrice = x[0];
             break;
         }
     }
     // assert x!=0
-    return x;
+    return sellPrice;
 }
 
 function getPercentageSpread(symbol) {
@@ -56,12 +61,13 @@ function getPercentageSpread(symbol) {
     return (offer-bid)/offer;
 }
 
-function getSymbolsWithSpreadAbove(percent) {
+global.getSymbolsWithSpreadAbove = function(percent) {
     var a = [];
     var listOfSymbols = ['FOO','BAR','BAZ','QUUX','CORGE'];
-    for (var x in listOfSymbols) {
-        if (getPercentageSpread('FOO') > percent)
-            a.push('FOO');
+    for (var i in listOfSymbols) {
+        var x = listOfSymbols[i];
+        if (getPercentageSpread(x) > percent)
+            a.push(x);
     }
     return a;
 }
@@ -94,27 +100,116 @@ global.book = {
 };
 
 global.logCorge = function(){ 
-    try {
-	console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
-	console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue());
-	console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue());
-	console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue());
-    } catch(err){}
+		console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
+		console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue());
+		console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue());
+		console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue());
 }
 
 global.getCorgeCompositeBuyValue = function() {
-    return global.book.FOO.buy[0][0] * 0.3 + global.book.BAR.buy[0][0] * 0.8;
+	var fooQ = 0;
+	var fooP = 0;
+	var i = 0;
+	while (fooQ < 100 && i < global.book.FOO.buy.length){
+		p_ = global.book.FOO.buy[i][0];
+		q_ = global.book.FOO.buy[i][1];
+		i += 1;
+		fooP += p_ * min(100 - fooQ, q_);
+		fooQ += q_;
+	}
+
+	if (fooQ < 100){
+		throw "not enough q";
+	}
+
+	var fooPrice = fooP / 100.0;
+
+	var barQ = 0;
+	var barP = 0;
+	var i = 0;
+	while (barQ < 100 && i < global.book.BAR.buy.length){
+		p_ = global.book.BAR.buy[i][0];
+		q_ = global.book.BAR.buy[i][1];
+		i += 1;
+		barP += p_ * min(100 - barQ, q_);
+		barQ += q_;
+	}
+	if (barQ < 100){
+		throw "not enough b";
+	}
+	var barPrice = barP / 100.0;
+	return fooPrice * 0.3 + barPrice * 0.8;
+    //return global.book.FOO.buy[0][0] * 0.3 + global.book.BAR.buy[0][0] * 0.8;
 }
 
 global.getCorgeCompositeSellValue = function() {
-    return global.book.FOO.sell[0][0] * 0.3 + global.book.BAR.sell[0][0] * 0.8;
+	var fooQ = 0;
+	var fooP = 0;
+	var i = 0;
+	while (fooQ < 100 && i < global.book.FOO.sell.length){
+		p_ = global.book.FOO.sell[i][0];
+		q_ = global.book.FOO.sell[i][1];
+		i += 1;
+		fooP += p_ * min(100 - fooQ, q_);
+		fooQ += q_;
+	}
+	if (fooQ < 100){
+		throw "not enough q";
+	}
+	var fooPrice = fooP / 100.0;
+
+	var barQ = 0;
+	var barP = 0;
+	var i = 0;
+	while (barQ < 100 && i < global.book.BAR.sell.length){
+		p_ = global.book.BAR.sell[i][0];
+		q_ = global.book.BAR.sell[i][1];
+		i += 1;
+		barP += p_ * min(100 - barQ, q_);
+		barQ += q_;
+	}
+	if (barQ < 100){
+		throw "not enough b";
+	}
+	var barPrice = barP / 100.0;
+	return fooPrice * 0.3 + barPrice * 0.8;
+    //return global.book.FOO.sell[0][0] * 0.3 + global.book.BAR.sell[0][0] * 0.8;
 }
 
 global.getCorgeActualBuyValue = function() {
-    return global.book.CORGE.buy[0][0];
+	var corgeQ = 0;
+	var corgeP = 0;
+	var maxP = 0;
+	var i = 0;
+	while (corgeQ < 100 && i < global.book.CORGE.buy.length){
+		p_ = global.book.CORGE.buy[i][0];
+		q_ = global.book.CORGE.buy[i][1];
+		i += 1;
+		corgeP += p_ * min(100 - corgeQ, q_);
+		corgeQ += q_;
+	}
+	if (corgeQ < 100){
+		throw "not enough q";
+	}
+	return corgePrice = corgeP / 100.0;
+    //return global.book.CORGE.buy[0][0];
 }
 
 global.getCorgeActualSellValue = function() {
+	var corgeQ = 0;
+	var corgeP = 0;
+	var i = 0;
+	while (corgeQ < 100 && i < global.book.CORGE.sell.length){
+		p_ = global.book.CORGE.sell[i][0];
+		q_ = global.book.CORGE.sell[i][1];
+		i += 1;
+		corgeP += p_ * min(100 - corgeQ, q_);
+		corgeQ += q_;
+	}
+	if (corgeQ < 100){
+		throw "not enough q";
+	}
+	return corgePrice = corgeP / 100.0;
     return global.book.CORGE.sell[0][0];
 }
 
