@@ -1,8 +1,4 @@
-
-var global = {
-    cash: 0,
-    market_opened: false,
-    symbols :{},
-
-}
+global.cash;
+global.market_opened;
+global.symbols = {};
 
