@@ -28,6 +28,16 @@ global.cash;
 global.market_opened;
 global.symbols = {};
 
+global.notifyFill = function(parsed_data){
+    if (parsed_data.dir == 'BUY'){
+        global.symbols[parsed_data.symbol] += parsed_data.size;
+        global.cash -= parsed_data.size * parsed_data.price;
+    } else {
+        global.symbols[parsed_data.symbol] -= parsed_data.size;
+        global.cash += parsed_data.size * parsed_data.price;
+    }
+}
+
 global.logPosition= function(){
     var string2log = 'cash: ' + global.cash + '\n' + 'market opened: ' + global.market_opened + '\n';
     for (var symbol in global.symbols){

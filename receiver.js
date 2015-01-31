@@ -51,6 +51,14 @@ global.socket.on('data', function(unparsed_data) {
             case "market_open":
                 global.market_opened = parsed_data.open;
                 break;
+            case 'fill':
+                global.notifyFill(parsed_data)
+                break;
+            case 'ack':
+                break;
+            case 'reject':
+                global.notifyReject(parsed_data);
+                break;
                 // etc. with cases
         }
     }
