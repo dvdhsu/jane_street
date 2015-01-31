@@ -1,7 +1,14 @@
 var net = require('net');
 
+var file1 = require('./FILE1.js')
+var file2 = require('./FILE2.js')
+
+file1.blah()
+file2.blah()
+
 var HOST = 'localhost';
 var PORT = 5000;
+
 
 var client = new net.Socket();
 client.connect(PORT, HOST, function() {
