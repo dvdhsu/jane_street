@@ -84,4 +84,3 @@ global.buyPosition = function(symbol, price, size){
 global.sellPosition = function(symbol, price, size){
     addPosition(symbol, price, size, 'SELL');
 }
-
