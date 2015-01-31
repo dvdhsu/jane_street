@@ -22,8 +22,10 @@ function getNewOrderId(){
     return order_id;
 }
 
-function addPosition(symbol, price, size, dir){
-    var new_order_id = getNewOrderId();
+function addPosition(symbol, price, size, dir, id){
+    var new_order_id;
+	if (id < 0) new_order_id  = getNewOrderId();
+	else new_order_id = id;
     var orderObj = {
         type: 'add',
         order_id : new_order_id,
@@ -283,12 +285,12 @@ global.send = function(msg){
   global.socket.write(msg);
 }
 
-global.buyPosition = function(symbol, price, size){
-    addPosition(symbol, price, size, 'BUY');
+global.buyPosition = function(symbol, price, size, id){
+    addPosition(symbol, price, size, 'BUY', id);
 }
 
-global.sellPosition = function(symbol, price, size){
-    addPosition(symbol, price, size, 'SELL');
+global.sellPosition = function(symbol, price, size, id){
+    addPosition(symbol, price, size, 'SELL', id);
 }
 
 global.convertToCorge  = function(quantity){

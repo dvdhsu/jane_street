@@ -26,20 +26,20 @@ exports.dumbTrader = function(){
 		var i = 1;
 		var fooPrice = global.book.FOO.sell[i][0];
 		var barPrice  = global.book.BAR.sell[i][0];
-		global.buyPosition('FOO', fooPrice, global.F);
-		global.buyPosition('BAR', barPrice, global.B);
+		global.buyPosition('FOO', fooPrice, global.F, -1);
+		global.buyPosition('BAR', barPrice, global.B, -1);
 		global.convertToCorge(global.Q);
-		global.sellPosition('CORGE', acCorgeBuyVal, global.Q);
+		global.sellPosition('CORGE', acCorgeBuyVal, global.Q, -1);
 	}
 	if (acCorgeSellVal < fairCorgeBuyVal){
 		console.log('OK CONVERTING OUT OF CORGE');
 		var i = 1;
 		var fooPrice = global.book.FOO.buy[i][0];
 		var barPrice  = global.book.BAR.buy[i][0];
-		global.buyPosition('CORGE', acCorgeSellVal, global.Q);
+		global.buyPosition('CORGE', acCorgeSellVal, global.Q, -1);
 		global.convertOutOfCorge(global.Q);
-		global.sellPosition('FOO', fooPrice, global.F);
-		global.sellPosition('BAR', barPrice, global.B);
+		global.sellPosition('FOO', fooPrice, global.F, -1);
+		global.sellPosition('BAR', barPrice, global.B, -1);
 	} else {
 		console.log("WHY");
 	}
