@@ -7,6 +7,21 @@ function getNewOrderId(){
     return order_id;
 }
 
+function addPosition(symbol, price, size, dir){
+    var new_order_id = getNewOrderId();
+    var orderObj = {
+        type: 'add',
+        order_id : new_order_id,
+        symbol: symbol,
+        dir: dir,
+        price: price,
+        size: size
+    };
+    var msg = JSON.stringify(orderObj);
+    order_id_to_order[new_order_id] = msg;
+    global.send(msg);
+}
+
 
 global.socket;
 global.cash;
@@ -31,18 +46,10 @@ global.send = function(msg){
 }
 
 global.buyPosition = function(symbol, price, size){
-    var new_order_id = getNewOrderId();
-    var orderObj = {
-        type: 'add',
-        order_id : new_order_id,
-        symbol: symbol,
-        dir: 'BUY',
-        price: price,
-        size: size
-    };
-    var msg = JSON.stringify(orderObj);
-    order_id_to_order[new_order_id] = msg;
-    global.send(msg);
+    addPosition(symbol, price, size, 'BUY');
+}
 
+global.sellPosition = function(symbol, price, size){
+    addPosition(symbol, price, size, 'SELL');
 }
 
