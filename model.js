@@ -1,9 +1,10 @@
 var order_id = 0;
 var order_id_to_order = {};
+var prev_string = '';
 
 function getNewOrderId(){
-    return order_id;
     order_id += 1;
+    return order_id;
 }
 
 
@@ -13,10 +14,13 @@ global.market_opened;
 global.symbols = {};
 
 global.logPosition= function(){
-    console.log('cash: ' + global.cash);
-    console.log('market opened: ' + global.market_opened);
+    var string2log = 'cash: ' + global.cash + '\n' + 'market opened: ' + global.market_opened + '\n';
     for (var symbol in global.symbols){
-        console.log('Symbol: ' + symbol + ', position: ' + global.symbols[symbol]);
+        string2log += 'Symbol: ' + symbol + ', position: ' + global.symbols[symbol] + '\n';
+    }
+    if (string2log != prev_string){
+        console.log(string2log);
+        prev_string = string2log;
     }
 }
 

@@ -18,13 +18,13 @@ global.socket.connect(PORT, HOST, function() {
     var helloMsg = JSON.stringify({type: 'hello', team: TEAM_NAME});
     global.send(helloMsg);
 
+    global.buyPosition('FOO',54342, 142);
 });
 
 
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 global.socket.on('data', function(unparsed_data) {
-    global.buyPosition('FOO',23, 142);
     global.logPosition();
     var lines = unparsed_data.toString().split('\n');
     for (var i =0; i != lines.length; ++i){
