@@ -6,7 +6,6 @@ exports.dumbTrader = function(){
     //global.convertFromCorge(100);
     //global.sellCorge(102);
     setTimeout(exports.dumbTrader, 2000);
-
 	try {
 	    global.logCorge();
 	var fairCorgeBuyVal = global.getCorgeCompositeBuyValue();

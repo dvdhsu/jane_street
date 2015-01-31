@@ -27,7 +27,7 @@ function addPosition(symbol, price, size, dir){
 function getBuyPriceWithQuantityAtLeast100(symbol) {
     var buyArray = global.book.symbol.buy;
     var buyPrice = 0;
-    for (x in buyArray) {
+    for (var x in buyArray) {
         if (x[1] >= 100) {
             buyPrice = x[0];
             break;
@@ -40,7 +40,7 @@ function getBuyPriceWithQuantityAtLeast100(symbol) {
 function getSellPriceWithQuantityAtLeast100(symbol) {
     var sellArray = global.book.symbol.sell;
     var sellPrice = 0;
-    for (x in sellArray) {
+    for (var x in sellArray) {
         if (x[1] >= 100) {
             sellPrice = x[0];
             break;
@@ -59,13 +59,12 @@ function getPercentageSpread(symbol) {
 function getSymbolsWithSpreadAbove(percent) {
     var a = [];
     var listOfSymbols = ['FOO','BAR','BAZ','QUUX','CORGE'];
-    for (x in listOfSymbols) {
+    for (var x in listOfSymbols) {
         if (getPercentageSpread('FOO') > percent)
             a.push('FOO');
     }
     return a;
 }
-
 
 global.socket;
 global.cash;
