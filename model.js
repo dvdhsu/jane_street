@@ -1,3 +1,5 @@
+var trader = require('./trader.js');
+
 var order_id = 0;
 var order_id_to_order = {};
 var prev_string = '';
@@ -50,12 +52,19 @@ global.book = {
     }
 };
 
+global.logCorge = function(){
+    console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
+    console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue());
+    console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue());
+    console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue());
+}
+
 global.getCorgeCompositeBuyValue = function() {
-    return global.book.FOO.buy * 0.3 + global.book.BAR.buy * 0.8;
+    return global.book.FOO.buy[0] * 0.3 + global.book.BAR.buy[0] * 0.8;
 }
 
 global.getCorgeCompositeSellValue = function() {
-    return global.book.FOO.sell * 0.3 + global.book.BAR.sell * 0.8;
+    return global.book.FOO.sell[0] * 0.3 + global.book.BAR.sell[0] * 0.8;
 }
 
 global.getCorgeActualBuyValue = function() {

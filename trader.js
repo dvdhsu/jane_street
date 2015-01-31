@@ -1,7 +1,10 @@
+var model = require('./model.js');
 exports.dumbTrader = function(){
     global.buyPosition('FOO',54342, 101);
     global.sellPosition('FOO', 53, 100);
     setTimeout(exports.dumbTrader, 2000);
+    global.logCorge();
+
 }
 
 
