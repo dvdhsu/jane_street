@@ -50,6 +50,22 @@ global.book = {
     }
 };
 
+global.getCorgeCompositeBuyValue = function() {
+    return global.book.FOO.buy * 0.3 + global.book.BAR.buy * 0.8;
+}
+
+global.getCorgeCompositeSellValue = function() {
+    return global.book.FOO.sell * 0.3 + global.book.BAR.sell * 0.8;
+}
+
+global.getCorgeActualBuyValue = function() {
+    return global.book.CORGE.buy;
+}
+
+global.getCorgeActualSellValue = function() {
+    return global.book.CORGE.sell;
+}
+
 global.notifyFill = function(parsed_data){
     if (parsed_data.dir == 'BUY'){
         global.symbols[parsed_data.symbol] += parsed_data.size;

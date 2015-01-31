@@ -20,6 +20,10 @@ global.socket.connect(PORT, HOST, function() {
     global.send(helloMsg);
 
     trader.dumbTrader();
+    console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue);
+    console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue);
+    console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue);
+    console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue);
     //global.buyPosition('FOO',54342, 142);
     //global.sellPosition('FOO', 53, 226);
 });
