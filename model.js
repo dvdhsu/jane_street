@@ -24,6 +24,48 @@ function addPosition(symbol, price, size, dir){
     global.send(msg);
 }
 
+function getBuyPriceWithQuantityAtLeast100(symbol) {
+    var buyArray = global.book.symbol.buy;
+    var buyPrice = 0;
+    for (x in buyArray) {
+        if (x[1] >= 100) {
+            buyPrice = x[0];
+            break;
+        }
+    }
+    // assert x!=0
+    return x;
+}
+
+function getSellPriceWithQuantityAtLeast100(symbol) {
+    var sellArray = global.book.symbol.sell;
+    var sellPrice = 0;
+    for (x in sellArray) {
+        if (x[1] >= 100) {
+            sellPrice = x[0];
+            break;
+        }
+    }
+    // assert x!=0
+    return x;
+}
+
+function getPercentageSpread(symbol) {
+    var bid = getBuyPriceWithQuantityAtLeast100(symbol);
+    var offer = getSellPriceWithQuantityAtLeast100(symbol);
+    return (offer-bid)/offer;
+}
+
+function getSymbolsWithSpreadAbove(percent) {
+    var a = [];
+    var listOfSymbols = ['FOO','BAR','BAZ','QUUX','CORGE'];
+    for (x in listOfSymbols) {
+        if (getPercentageSpread('FOO') > percent)
+            a.push('FOO');
+    }
+    return a;
+}
+
 
 global.socket;
 global.cash;
@@ -52,27 +94,49 @@ global.book = {
     }
 };
 
-global.logCorge = function(){
-    console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
-    console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue());
-    console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue());
-    console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue());
+global.logCorge = function(){ 
+    try {
+	console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
+	console.log("global.getCorgeCompositeSellValue: " + global.getCorgeCompositeSellValue());
+	console.log("global.getCorgeActualBuyValue: " + global.getCorgeActualBuyValue());
+	console.log("global.getCorgeActualSellValue: " + global.getCorgeActualSellValue());
+    } catch(err){}
 }
 
 global.getCorgeCompositeBuyValue = function() {
-    return global.book.FOO.buy[0] * 0.3 + global.book.BAR.buy[0] * 0.8;
+    return global.book.FOO.buy[0][0] * 0.3 + global.book.BAR.buy[0][0] * 0.8;
 }
 
 global.getCorgeCompositeSellValue = function() {
-    return global.book.FOO.sell[0] * 0.3 + global.book.BAR.sell[0] * 0.8;
+    return global.book.FOO.sell[0][0] * 0.3 + global.book.BAR.sell[0][0] * 0.8;
 }
 
 global.getCorgeActualBuyValue = function() {
-    return global.book.CORGE.buy;
+    return global.book.CORGE.buy[0][0];
 }
 
 global.getCorgeActualSellValue = function() {
-    return global.book.CORGE.sell;
+    return global.book.CORGE.sell[0][0];
+}
+
+global.notifyAccepted = function(parsed_data){
+	var order_id = parsed_data.order_id;
+	var order = JSON.parse(order_id_to_order[order_id]);
+	if (order.symbol == 'CORGE'){
+		var size = order.size;
+		var fooSize = size * 0.3;
+		var barSize = size * 0.8;
+		if (order.dir == 'BUY'){
+			global.symbols.FOO -= fooSize;
+			global.symbols.BAR -= barSize;
+			global.symbols.CORGE += size;
+		} else {
+			global.symbols.FOO += fooSize;
+			global.symbols.BAR += barSize;
+			global.symbols.CORGE -= size;
+		}
+		global.cash -= 100;// 100 dollar fee bro
+	}
 }
 
 global.notifyFill = function(parsed_data){
@@ -108,4 +172,32 @@ global.buyPosition = function(symbol, price, size){
 
 global.sellPosition = function(symbol, price, size){
     addPosition(symbol, price, size, 'SELL');
+}
+
+global.convertToCorge  = function(quantity){
+    var new_order_id = getNewOrderId();
+    var orderObj = {
+        type: 'convert',
+        order_id : new_order_id,
+        symbol: 'CORGE',
+        dir: 'BUY',
+        size: quantity
+    };
+    var msg = JSON.stringify(orderObj);
+    order_id_to_order[new_order_id] = msg;
+    global.send(msg);
+}
+
+global.convertOutOfCorge  = function(quantity){
+    var new_order_id = getNewOrderId();
+    var orderObj = {
+        type: 'convert',
+        order_id : new_order_id,
+        symbol: 'CORGE',
+        dir: 'SELL',
+        size: quantity
+    };
+    var msg = JSON.stringify(orderObj);
+    order_id_to_order[new_order_id] = msg;
+    global.send(msg);
 }

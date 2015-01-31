@@ -53,14 +53,16 @@ global.socket.on('data', function(unparsed_data) {
                 global.notifyFill(parsed_data)
                 break;
             case 'ack':
+  		global.notifyAccepted(parsed_data);
                 break;
             case "book":
                 //record entries in book
                 global.book[parsed_data["symbol"]]["buy"] = parsed_data["buy"];
                 global.book[parsed_data["symbol"]]["sell"] = parsed_data["sell"];
+		trader.notifyBookChange();
                 break;
             case 'reject':
-                global.notifyReject(parsed_data);
+                console.log('ERROR BECAUSE: ' + lines[i]);
                 break;
                 // etc. with cases
         }
