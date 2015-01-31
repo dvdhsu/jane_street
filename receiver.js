@@ -1,17 +1,27 @@
 var net = require('net');
 var model = require('./model.js')
 
-var HOST = 'localhost';
-var PORT = 5000;
+var TEST_EXCH_PRIVATE_IC_IP = '10.0.146.192';
+var TEST_EXCH_PUBLIC_IP = '54.154.186.161';
+var HOST = TEST_EXCH_PRIVATE_IC_IP;
+var PORT = 25002;
 
 var client = new net.Socket();
 client.connect(PORT, HOST, function() {
 
   console.log('CONNECTED TO: ' + HOST + ':' + PORT);
+
   // Write a message to the socket as soon as the client is connected, the server will receive it as message from the client 
-  // client.write('I am Chuck Norris!');
+  var helloMsg = JSON.stringify({type: 'hello', team: 'pomegranate'});
+  send_log(helloMsg);
 
 });
+
+
+function send_log(msg){
+  console.log('Sending: ' + msg);
+  client.write(msg);
+}
 
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
