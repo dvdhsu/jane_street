@@ -27,6 +27,28 @@ global.socket;
 global.cash;
 global.market_opened;
 global.symbols = {};
+global.book = {
+    "FOO": {
+        "buy": [],
+        "sell": []
+    },
+    "BAR": {
+        "buy": [],
+        "sell": []
+    },
+    "BAZ": {
+        "buy": [],
+        "sell": []
+    },
+    "QUUX": {
+        "buy": [],
+        "sell": []
+    },
+    "CORGE": {
+        "buy": [],
+        "sell": []
+    }
+};
 
 global.notifyFill = function(parsed_data){
     if (parsed_data.dir == 'BUY'){
