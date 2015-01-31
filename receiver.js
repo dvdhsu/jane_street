@@ -30,14 +30,13 @@ function send_log(msg){
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 client.on('data', function(unparsed_data) {
+  global.logPosition();
   var lines = unparsed_data.toString().split('\n');
   for (var i =0; i != lines.length; ++i){
-  console.log('line: ' + lines[i]);
 try {
   parsed_data = JSON.parse(lines[i]);
 }
 catch (err) {
-  console.log('Error: ' + err);
   continue;
 }
   switch(parsed_data["type"]) {
@@ -46,11 +45,11 @@ catch (err) {
       for (var ticker in parsed_data.symbols) {
         global.symbols[ticker.symbol] = ticker.position;
       }
-      global.market_open = parsed_data.market_open;
+      global.market_opened = parsed_data.market_open;
       break;
 
     case "market_open":
-      global.market_open = parsed_data.open;
+      global.market_opened = parsed_data.open;
       break;
       // etc. with cases
   }
