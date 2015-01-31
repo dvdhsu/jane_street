@@ -349,7 +349,7 @@ global.cancelPosition = function(order_id) {
         type: 'cancel',
         order_id: order_id
     };
-    var msg = JSON.stringify(orderObj);
+    var msg = JSON.stringify(cancelObj);
     global.send(msg);
 }
 
