@@ -1,4 +1,5 @@
 var net = require('net');
+var model = require('./model.js')
 
 var HOST = 'localhost';
 var PORT = 5000;
@@ -16,12 +17,13 @@ client.connect(PORT, HOST, function() {
 // data is what the server sent to this socket
 client.on('data', function(unparsed_data) {
   parsed_data = JSON.parse(unparsed_data);
-  console.log('DATA: ' + parsed_data);
+  console.log('DATA: ' + unparsed_data);
+  console.log(global);
 
   switch(parsed_data["type"]) {
     case "hello":
       global.cash = parsed_data.cash;
-      for ticker in parsed_data.symbols {
+      for (var ticker in parsed_data.symbols) {
         global.symbols[ticker.symbol] = ticker.position;
       }
       global.market_open = parsed_data.market_open;
@@ -30,9 +32,7 @@ client.on('data', function(unparsed_data) {
     case "market_open":
       global.market_open = parsed_data.open;
       break;
-
       // etc. with cases
-
   }
   // Close the client socket completely
   //client.destroy();
