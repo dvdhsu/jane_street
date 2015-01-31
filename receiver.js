@@ -78,5 +78,4 @@ global.socket.on('data', function(unparsed_data) {
 // Add a 'close' event handler for the client socket
 global.socket.on('close', function() {
     console.log('Connection closed');
-startme();
 });
