@@ -4,7 +4,7 @@ exports.dumbTrader = function(){
     global.sellPosition('FOO', 53, 100);
     setTimeout(exports.dumbTrader, 2000);
     global.logCorge();
-
+    console.log(global.getSymbolsWithSpreadAbove(0.5));
 }
 
 
