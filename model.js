@@ -37,35 +37,50 @@ function addPosition(symbol, price, size, dir){
     global.send(msg);
 }
 
+global.spreadBalance = 1000;
+global.buySpreadPrice = [];
+global.sellSpreadPrice = [];
+
+global.getMiddleSpreadPrice = function(symbol) {
+        console.log("howd");
+        console.log(global.buySpreadPrice[symbol]);
+    return global.buySpreadPrice[symbol] + (global.sellSpreadPrice[symbol]-global.buySpreadPrice[symbol])$
+}
+
 function getBuyPriceWithQuantityAtLeast100(symbol) {
     var buyArray = global.book[symbol].buy;
     var buyPrice = 0;
-    for (x in buyArray) {
+    for (i in buyArray) {
+        var x = buyArray[i];
         if (x[1] >= 100) {
             buyPrice = x[0];
             break;
         }
     }
+        global.buySpreadPrice[symbol] = buyPrice;
     // assert x!=0
-    return buyPrice;
+
+    return parseInt(x);
 }
 
 function getSellPriceWithQuantityAtLeast100(symbol) {
     var sellArray = global.book[symbol].sell;
     var sellPrice = 0;
-    for (x in sellArray) {
+    for (i in sellArray) {
+        var x = sellArray[i];
         if (x[1] >= 100) {
             sellPrice = x[0];
             break;
         }
     }
+        global.sellSpreadPrice[symbol] = sellPrice;
     // assert x!=0
-    return sellPrice;
+    return parseInt(x);
 }
 
 function getPercentageSpread(symbol) {
-    var bid = getBuyPriceWithQuantityAtLeast100(symbol);
-    var offer = getSellPriceWithQuantityAtLeast100(symbol);
+    var bid = getBuyPriceWithQuantityAtLeast100(symbol); console.log("bid: " + bid);
+    var offer = getSellPriceWithQuantityAtLeast100(symbol); console.log("offer: " + offer);
     return (offer-bid)/offer;
 }
 
@@ -74,6 +89,7 @@ global.getSymbolsWithSpreadAbove = function(percent) {
     var listOfSymbols = ['FOO','BAR','BAZ','QUUX','CORGE'];
     for (var i in listOfSymbols) {
         var x = listOfSymbols[i];
+        console.log(x + " - " + getPercentageSpread(x));
         if (getPercentageSpread(x) > percent)
             a.push(x);
     }
