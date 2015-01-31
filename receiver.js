@@ -18,14 +18,18 @@ global.socket.connect(PORT, HOST, function() {
     var helloMsg = JSON.stringify({type: 'hello', team: TEAM_NAME});
     global.send(helloMsg);
 
-    global.buyPosition('FOO',54342, 142);
+    //global.buyPosition('FOO',54342, 142);
+    global.sellPosition('FOO', 53, 226);
 });
 
 
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 global.socket.on('data', function(unparsed_data) {
-    global.logPosition();
+    console.log("UNPARSED DATA OPEN\n");
+    console.log(unparsed_data);
+    console.log("UNPARSED DATA CLOSE\n");
+	global.logPosition();
     var lines = unparsed_data.toString().split('\n');
     for (var i =0; i != lines.length; ++i){
         try {
@@ -37,7 +41,8 @@ global.socket.on('data', function(unparsed_data) {
         switch(parsed_data["type"]) {
             case "hello":
                 global.cash = parsed_data.cash;
-                for (var ticker in parsed_data.symbols) {
+                for (var i = 0; i < parsed_data.symbols.length; ++i) {
+                    ticker = parsed_data.symbols[i];
                     global.symbols[ticker.symbol] = ticker.position;
                 }
                 global.market_opened = parsed_data.market_open;
