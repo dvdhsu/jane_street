@@ -4,6 +4,14 @@ var order_id = 0;
 var order_id_to_order = {};
 var prev_string = '';
 
+var QUANTITY = 100.0;
+var F = QUANTITY  * .3;
+var B = QUANTITY * .8;
+
+global.F = F;
+global.B = B;
+global.Q = QUANTITY;
+
 function min(x,y){
 	if (x < y){return x;}
 	return y;
@@ -21,7 +29,7 @@ function addPosition(symbol, price, size, dir){
         order_id : new_order_id,
         symbol: symbol,
         dir: dir,
-        price: price,
+        price: Math.round(price),
         size: size
     };
     var msg = JSON.stringify(orderObj);
@@ -110,34 +118,33 @@ global.getCorgeCompositeBuyValue = function() {
 	var fooQ = 0;
 	var fooP = 0;
 	var i = 0;
-	while (fooQ < 100 && i < global.book.FOO.buy.length){
+	while (fooQ < F && i < global.book.FOO.buy.length){
 		p_ = global.book.FOO.buy[i][0];
 		q_ = global.book.FOO.buy[i][1];
 		i += 1;
-		fooP += p_ * min(100 - fooQ, q_);
+		fooP += p_ * min(F - fooQ, q_);
 		fooQ += q_;
 	}
 
-	if (fooQ < 100){
+	if (fooQ < F){
 		throw "not enough q";
 	}
 
-	var fooPrice = fooP / 100.0;
-
+	var fooPrice = fooP / F;
 	var barQ = 0;
 	var barP = 0;
 	var i = 0;
-	while (barQ < 100 && i < global.book.BAR.buy.length){
+	while (barQ < B && i < global.book.BAR.buy.length){
 		p_ = global.book.BAR.buy[i][0];
 		q_ = global.book.BAR.buy[i][1];
 		i += 1;
-		barP += p_ * min(100 - barQ, q_);
+		barP += p_ * min(B - barQ, q_);
 		barQ += q_;
 	}
-	if (barQ < 100){
+	if (barQ < B){
 		throw "not enough b";
 	}
-	var barPrice = barP / 100.0;
+	var barPrice = barP / B;
 	return fooPrice * 0.3 + barPrice * 0.8;
     //return global.book.FOO.buy[0][0] * 0.3 + global.book.BAR.buy[0][0] * 0.8;
 }
@@ -146,32 +153,32 @@ global.getCorgeCompositeSellValue = function() {
 	var fooQ = 0;
 	var fooP = 0;
 	var i = 0;
-	while (fooQ < 100 && i < global.book.FOO.sell.length){
+	while (fooQ < F && i < global.book.FOO.sell.length){
 		p_ = global.book.FOO.sell[i][0];
 		q_ = global.book.FOO.sell[i][1];
 		i += 1;
-		fooP += p_ * min(100 - fooQ, q_);
+		fooP += p_ * min(F - fooQ, q_);
 		fooQ += q_;
 	}
-	if (fooQ < 100){
+	if (fooQ < F){
 		throw "not enough q";
 	}
-	var fooPrice = fooP / 100.0;
+	var fooPrice = fooP / F;
 
 	var barQ = 0;
 	var barP = 0;
 	var i = 0;
-	while (barQ < 100 && i < global.book.BAR.sell.length){
+	while (barQ < B && i < global.book.BAR.sell.length){
 		p_ = global.book.BAR.sell[i][0];
 		q_ = global.book.BAR.sell[i][1];
 		i += 1;
-		barP += p_ * min(100 - barQ, q_);
+		barP += p_ * min(B - barQ, q_);
 		barQ += q_;
 	}
-	if (barQ < 100){
+	if (barQ < B){
 		throw "not enough b";
 	}
-	var barPrice = barP / 100.0;
+	var barPrice = barP / B;
 	return fooPrice * 0.3 + barPrice * 0.8;
     //return global.book.FOO.sell[0][0] * 0.3 + global.book.BAR.sell[0][0] * 0.8;
 }
@@ -181,17 +188,17 @@ global.getCorgeActualBuyValue = function() {
 	var corgeP = 0;
 	var maxP = 0;
 	var i = 0;
-	while (corgeQ < 100 && i < global.book.CORGE.buy.length){
+	while (corgeQ < QUANTITY && i < global.book.CORGE.buy.length){
 		p_ = global.book.CORGE.buy[i][0];
 		q_ = global.book.CORGE.buy[i][1];
 		i += 1;
-		corgeP += p_ * min(100 - corgeQ, q_);
+		corgeP += p_ * min(QUANTITY - corgeQ, q_);
 		corgeQ += q_;
 	}
-	if (corgeQ < 100){
+	if (corgeQ < QUANTITY){
 		throw "not enough q";
 	}
-	return corgePrice = corgeP / 100.0;
+	return corgePrice = corgeP / QUANTITY;
     //return global.book.CORGE.buy[0][0];
 }
 
@@ -199,17 +206,17 @@ global.getCorgeActualSellValue = function() {
 	var corgeQ = 0;
 	var corgeP = 0;
 	var i = 0;
-	while (corgeQ < 100 && i < global.book.CORGE.sell.length){
+	while (corgeQ < QUANTITY && i < global.book.CORGE.sell.length){
 		p_ = global.book.CORGE.sell[i][0];
 		q_ = global.book.CORGE.sell[i][1];
 		i += 1;
-		corgeP += p_ * min(100 - corgeQ, q_);
+		corgeP += p_ * min(QUANTITY - corgeQ, q_);
 		corgeQ += q_;
 	}
-	if (corgeQ < 100){
+	if (corgeQ < QUANTITY){
 		throw "not enough q";
 	}
-	return corgePrice = corgeP / 100.0;
+	return corgePrice = corgeP / QUANTITY;
     return global.book.CORGE.sell[0][0];
 }
 

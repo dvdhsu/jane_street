@@ -1,16 +1,22 @@
+var ipaddress = process.argv[2];
+var index = process.argv[3];
+
 var net = require('net');
 var model = require('./model.js');
 var trader = require('./trader.js');
 
 var TEST_EXCH_PRIVATE_IP = '10.0.146.192';
 var TEST_EXCH_PUBLIC_IP = '54.154.185.161';
-var HOST = TEST_EXCH_PRIVATE_IP;
-var PORT = 25000;
+var HOST = ipaddress;
+var PORT = 25000 + parseInt(index);
 
+console.log('HOST: ' + HOST);
+console.log('PORT: ' + PORT);
 var TEAM_NAME = 'POMEGRANATE';
 
 console.log("PLEASE WORK");
 global.socket = new net.Socket();
+
 global.socket.connect(PORT, HOST, function() {
 
     console.log('CONNECTED TO: ' + HOST + ':' + PORT);
@@ -72,4 +78,5 @@ global.socket.on('data', function(unparsed_data) {
 // Add a 'close' event handler for the client socket
 global.socket.on('close', function() {
     console.log('Connection closed');
+startme();
 });
