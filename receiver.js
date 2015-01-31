@@ -59,7 +59,7 @@ global.socket.on('data', function(unparsed_data) {
                 //record entries in book
                 global.book[parsed_data["symbol"]]["buy"] = parsed_data["buy"];
                 global.book[parsed_data["symbol"]]["sell"] = parsed_data["sell"];
-		trader.notifyBookChange();
+		trader.notifyBookChange(parsed_data["symbol"]);
                 break;
             case 'reject':
                 console.log('ERROR BECAUSE: ' + lines[i]);

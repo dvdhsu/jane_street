@@ -1,5 +1,33 @@
 var trader = require('./trader.js');
 
+global.socket;
+global.cash;
+global.market_opened;
+global.symbols = {};
+global.book = {
+    "FOO": {
+        "buy": [],
+        "sell": []
+    },
+    "BAR": {
+        "buy": [],
+        "sell": []
+    },
+    "BAZ": {
+        "buy": [],
+        "sell": []
+    },
+    "QUUX": {
+        "buy": [],
+        "sell": []
+    },
+    "CORGE": {
+        "buy": [],
+        "sell": []
+    }
+};
+global.prev_pennied_order_id = {}
+global.prev_pennied_order_prices = {}
 var order_id = 0;
 var order_id_to_order = {};
 var prev_string = '';
@@ -65,33 +93,6 @@ function getSymbolsWithSpreadAbove(percent) {
     }
     return a;
 }
-
-global.socket;
-global.cash;
-global.market_opened;
-global.symbols = {};
-global.book = {
-    "FOO": {
-        "buy": [],
-        "sell": []
-    },
-    "BAR": {
-        "buy": [],
-        "sell": []
-    },
-    "BAZ": {
-        "buy": [],
-        "sell": []
-    },
-    "QUUX": {
-        "buy": [],
-        "sell": []
-    },
-    "CORGE": {
-        "buy": [],
-        "sell": []
-    }
-};
 
 global.logCorge = function(){ 
     try {
@@ -171,6 +172,15 @@ global.buyPosition = function(symbol, price, size){
 
 global.sellPosition = function(symbol, price, size){
     addPosition(symbol, price, size, 'SELL');
+}
+
+global.cancelPosition = function(order_id) {
+    var cancelObj = {
+        type: 'cancel',
+        order_id: order_id
+    };
+    var msg = JSON.stringify(orderObj);
+    global.send(msg);
 }
 
 global.convertToCorge  = function(quantity){
