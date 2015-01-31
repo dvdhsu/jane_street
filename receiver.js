@@ -68,6 +68,19 @@ global.socket.on('data', function(unparsed_data) {
                 global.book[parsed_data["symbol"]]["sell"] = parsed_data["sell"];
 		trader.notifyBookChange(parsed_data["symbol"]);
                 break;
+
+            case 'fill':
+                console.log("ORDER WAS FILLED!");
+                if (parsed_data.dir == "BUY" && (parsed_data.symbol == "QUUX" || parsed_data.symbol == "BAZ")) {
+                    // this was a penny-ing order
+                    // so sell it or more
+                    bought_price = parsed_data.price;
+                    selling_price = global.book[symbol].buy[1][0] - 1;
+                    if (selling_price > bought_price) {
+                        console.log("selling at this price: " + parsed_data.price);
+                        global.sellPosition(parsed_data.symbol, parsed_data.price, parsed_data.size, -1);
+                    }
+                }
             case 'reject':
                 console.log('ERROR BECAUSE: ' + lines[i]);
                 break;

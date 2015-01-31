@@ -79,32 +79,30 @@ exports.notifyBookChange = function(symbol){
             // consider equities
      }
      else {
-         // see if we can liquidate our current stock at profit
-     }
+         // penny it
+         max_buy_price = global.book[symbol].buy[0][0];
+         max_buy_shares = global.book[symbol].buy[0][1];
 
-     // penny it
-     max_buy_price = global.book[symbol].buy[0][0];
-     max_buy_shares = global.book[symbol].buy[0][1];
+         min_sell_price = global.book[symbol].sell[0][0];
+         max_sell_shares = global.book[symbol].sell[0][1];
 
-     min_sell_price = global.book[symbol].sell[0][0];
-     max_sell_shares = global.book[symbol].sell[0][1];
-
-     // if it's less than 10 shares, probably somebody is trying to make up mess up.
-     // So, we ignore it.
-     // Must also be greater than our last bid price
-     // They must also be two away
-     if (max_buy_shares > 10 && max_buy_price > penny_prices[symbol] && max_buy_price + 1 < min_sell_price - 1) {
-         our_buy_price = max_buy_price + 1;
-         // hard-code to 100
-         our_buy_shares = 100;
-         our_sell_price = min_sell_price - 1;
-         console.log("we're about to penny " + symbol + " at " + our_buy_price);
-         global.cancelPosition(global.prev_pennied_order_id[symbol]);
-         global.prev_pennied_order_id[symbol] = global.buyPosition(symbol, our_buy_price, our_buy_shares);
-         penny_prices[symbol] = our_buy_price;
-         // sell this later, when it's confirmed
-         //global.sellPosition(symbol, our_sell_price, our_buy_shares);
-     }
+         // if it's less than 10 shares, probably somebody is trying to make up mess up.
+         // So, we ignore it.
+         // Must also be greater than our last bid price
+         // They must also be two away
+         if (max_buy_shares > 10 && max_buy_price > penny_prices[symbol] && max_buy_price + 1 < min_sell_price - 1) {
+             our_buy_price = max_buy_price + 1;
+             // hard-code to 100
+             our_buy_shares = 100;
+             our_sell_price = min_sell_price - 1;
+             console.log("we're about to penny " + symbol + " at " + our_buy_price);
+             global.cancelPosition(global.prev_pennied_order_id[symbol]);
+             global.prev_pennied_order_id[symbol] = global.buyPosition(symbol, our_buy_price, our_buy_shares);
+             penny_prices[symbol] = our_buy_price;
+             // sell this later, when it's confirmed
+             //global.sellPosition(symbol, our_sell_price, our_buy_shares);
+         }
+    }
 }
 
 exports.notifyBuy = function(buy_data){
