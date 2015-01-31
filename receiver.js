@@ -1,16 +1,22 @@
+var ipaddress = process.argv[2];
+var index = process.argv[3];
+
 var net = require('net');
 var model = require('./model.js');
 var trader = require('./trader.js');
 
 var TEST_EXCH_PRIVATE_IP = '10.0.146.192';
 var TEST_EXCH_PUBLIC_IP = '54.154.185.161';
-var HOST = TEST_EXCH_PRIVATE_IP;
-var PORT = 25000;
+var HOST = ipaddress;
+var PORT = 25000 + parseInt(index);
 
-var TEAM_NAME = 'POMEGRANATE';
+console.log('HOST: ' + HOST);
+console.log('PORT: ' + PORT);
+var TEAM_NAME = 'SBC';
 
 console.log("PLEASE WORK");
 global.socket = new net.Socket();
+
 global.socket.connect(PORT, HOST, function() {
 
     console.log('CONNECTED TO: ' + HOST + ':' + PORT);
@@ -28,6 +34,7 @@ global.socket.connect(PORT, HOST, function() {
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 global.socket.on('data', function(unparsed_data) {
+//    console.log(unparsed_data.toString());
     global.logPosition();
     var lines = unparsed_data.toString().split('\n');
     for (var i =0; i != lines.length; ++i){
