@@ -21,7 +21,6 @@ exports.dumbTrader = function(){
 	console.log("Symbols with spread above 0.01");
 	var highSpreadSymbols = global.getSymbolsWithSpreadAbove(0.01);
 	console.log(highSpreadSymbols);
-	console.log(global.book);
 /*
 	if (acCorgeBuyVal > fairCorgeSellVal){
 		console.log('OK CONVERTING TO CORGE');
@@ -51,8 +50,9 @@ exports.dumbTrader = function(){
                 	var x = highSpreadSymbols[i];
                 	if (global.spreadBalance > 0) {
                      	   	var y = Math.round(global.getMiddleSpreadPrice(x));
-                        	console.log(y);
-                        	global.buyPosition(x, y, 100,1000);
+         
+                        	global.buyPosition(x, y, 100,global.spreadId);
+				global.incrementSpreadId();
                         
                 	}
         	}

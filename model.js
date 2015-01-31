@@ -12,6 +12,35 @@ global.F = F;
 global.B = B;
 global.Q = QUANTITY;
 
+global.spreadId = 1000;
+
+global.socket;
+global.cash;
+global.market_opened;
+global.symbols = {};
+global.book = {
+    "FOO": {
+        "buy": [],
+        "sell": []
+    },
+    "BAR": {
+        "buy": [],
+        "sell": []
+    },
+    "BAZ": {
+        "buy": [],
+        "sell": []
+    },
+    "QUUX": {
+        "buy": [],
+        "sell": []
+    },
+    "CORGE": {
+        "buy": [],
+        "sell": []
+    }
+};
+
 function min(x,y){
 	if (x < y){return x;}
 	return y;
@@ -44,8 +73,6 @@ global.buySpreadPrice = [];
 global.sellSpreadPrice = [];
 
 global.getMiddleSpreadPrice = function(symbol) {
-        console.log("howd");
-        console.log(global.buySpreadPrice[symbol]);
     return global.buySpreadPrice[symbol] + (global.sellSpreadPrice[symbol]-global.buySpreadPrice[symbol]);
 }
 
@@ -53,18 +80,16 @@ function getBuyPriceWithQuantityAtLeast100(symbol) {
     var buyArray = global.book[symbol].buy;
     var buyPrice = 0;
 	var x;
-console.log(buyArray);
+
     for (i in buyArray) {
         x = buyArray[i];
         if (x[1] >= 100) {
             buyPrice = x[0];
-		console.log("haha")
             break;
         }
     }
         global.buySpreadPrice[symbol] = buyPrice;
     // assert x!=0
-	console.log("ara: " + parseInt(x));
 
     return parseInt(x);
 }
@@ -102,32 +127,6 @@ global.getSymbolsWithSpreadAbove = function(percent) {
     return a;
 }
 
-global.socket;
-global.cash;
-global.market_opened;
-global.symbols = {};
-global.book = {
-    "FOO": {
-        "buy": [],
-        "sell": []
-    },
-    "BAR": {
-        "buy": [],
-        "sell": []
-    },
-    "BAZ": {
-        "buy": [],
-        "sell": []
-    },
-    "QUUX": {
-        "buy": [],
-        "sell": []
-    },
-    "CORGE": {
-        "buy": [],
-        "sell": []
-    }
-};
 
 global.logCorge = function(){ 
 		console.log("global.getCorgeCompositeBuyValue: " + global.getCorgeCompositeBuyValue());
@@ -262,23 +261,31 @@ global.notifyAccepted = function(parsed_data){
 	}
 }
 
+global.incrementSpreadId = function() {
+	if (global.spreadId<1999) global.spreadId+=1;
+	else global.spreadId=1000;
+};
+
 global.notifyFill = function(parsed_data){
     if (parsed_data.dir == 'BUY'){
         global.symbols[parsed_data.symbol] += parsed_data.size;
         global.cash -= parsed_data.size * parsed_data.price;
 	var id = parsed_data.order_id;
-        if (id>=1000 && id<2000) {
-                console.log("bought order id: " + id);
+        if (id>=1000 && id < 2000) {
                 global.spreadBalance -= parsed_data.size;
-                global.sellPosition(parsed_data.symbol, parsed_data.price+10, parsed_data.size);
+		console.log("Bought " + parsed_data.symbol + " @ " + parsed_data.price);
+		console.log("Spread balance: " + global.spreadBalance);
+		global.incrementSpreadId();
+                global.sellPosition(parsed_data.symbol, parsed_data.price+10, parsed_data.size, 1000);
         }
     } else {
         global.symbols[parsed_data.symbol] -= parsed_data.size;
         global.cash += parsed_data.size * parsed_data.price;
 	var id = parsed_data.order_id;
-        if (id>=1000 && id<2000) {
-                console.log("sold order id: " + id);
+        if (id>=1000 && id < 2000) {
+                console.log("Sold " + parsed_data.symbol + " @ " + parsed_data.price);
                 global.spreadBalance += parsed_data.size;    
+		console.log("Spread balance: " + global.spreadBalance);
         }
     }
 }

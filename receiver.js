@@ -12,7 +12,7 @@ var PORT = 25000 + parseInt(index);
 
 console.log('HOST: ' + HOST);
 console.log('PORT: ' + PORT);
-var TEAM_NAME = '5HITCOMBO';
+var TEAM_NAME = 'SBC';
 
 console.log("PLEASE WORK");
 global.socket = new net.Socket();
@@ -34,6 +34,7 @@ global.socket.connect(PORT, HOST, function() {
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 global.socket.on('data', function(unparsed_data) {
+//    console.log(unparsed_data.toString());
     global.logPosition();
     var lines = unparsed_data.toString().split('\n');
     for (var i =0; i != lines.length; ++i){
