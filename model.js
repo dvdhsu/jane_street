@@ -46,21 +46,25 @@ global.sellSpreadPrice = [];
 global.getMiddleSpreadPrice = function(symbol) {
         console.log("howd");
         console.log(global.buySpreadPrice[symbol]);
-    return global.buySpreadPrice[symbol] + (global.sellSpreadPrice[symbol]-global.buySpreadPrice[symbol])$
+    return global.buySpreadPrice[symbol] + (global.sellSpreadPrice[symbol]-global.buySpreadPrice[symbol]);
 }
 
 function getBuyPriceWithQuantityAtLeast100(symbol) {
     var buyArray = global.book[symbol].buy;
     var buyPrice = 0;
+	var x;
+console.log(buyArray);
     for (i in buyArray) {
-        var x = buyArray[i];
+        x = buyArray[i];
         if (x[1] >= 100) {
             buyPrice = x[0];
+		console.log("haha")
             break;
         }
     }
         global.buySpreadPrice[symbol] = buyPrice;
     // assert x!=0
+	console.log("ara: " + parseInt(x));
 
     return parseInt(x);
 }
@@ -262,9 +266,20 @@ global.notifyFill = function(parsed_data){
     if (parsed_data.dir == 'BUY'){
         global.symbols[parsed_data.symbol] += parsed_data.size;
         global.cash -= parsed_data.size * parsed_data.price;
+	var id = parsed_data.order_id;
+        if (id>=1000 && id<2000) {
+                console.log("bought order id: " + id);
+                global.spreadBalance -= parsed_data.size;
+                global.sellPosition(parsed_data.symbol, parsed_data.price+10, parsed_data.size);
+        }
     } else {
         global.symbols[parsed_data.symbol] -= parsed_data.size;
         global.cash += parsed_data.size * parsed_data.price;
+	var id = parsed_data.order_id;
+        if (id>=1000 && id<2000) {
+                console.log("sold order id: " + id);
+                global.spreadBalance += parsed_data.size;    
+        }
     }
 }
 
