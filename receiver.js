@@ -58,18 +58,6 @@ global.socket.on('data', function(unparsed_data) {
                 break;
             case 'fill':
                 global.notifyFill(parsed_data)
-                break;
-            case 'ack':
-  		global.notifyAccepted(parsed_data);
-                break;
-            case "book":
-                //record entries in book
-                global.book[parsed_data["symbol"]]["buy"] = parsed_data["buy"];
-                global.book[parsed_data["symbol"]]["sell"] = parsed_data["sell"];
-		trader.notifyBookChange(parsed_data["symbol"]);
-                break;
-
-            case 'fill':
                 console.log("ORDER WAS FILLED!");
                 if (parsed_data.dir == "BUY" && (parsed_data.symbol == "QUUX" || parsed_data.symbol == "BAZ")) {
                     // this was a penny-ing order
@@ -81,6 +69,16 @@ global.socket.on('data', function(unparsed_data) {
                         global.sellPosition(parsed_data.symbol, parsed_data.price, parsed_data.size, -1);
                     }
                 }
+                break;
+            case 'ack':
+  		global.notifyAccepted(parsed_data);
+                break;
+            case "book":
+                //record entries in book
+                global.book[parsed_data["symbol"]]["buy"] = parsed_data["buy"];
+                global.book[parsed_data["symbol"]]["sell"] = parsed_data["sell"];
+		trader.notifyBookChange(parsed_data["symbol"]);
+                break;
             case 'reject':
                 console.log('ERROR BECAUSE: ' + lines[i]);
                 break;
