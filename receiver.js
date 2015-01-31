@@ -1,5 +1,6 @@
 var net = require('net');
-var model = require('./model.js')
+var model = require('./model.js');
+var trader = require('./trader.js');
 
 var TEST_EXCH_PRIVATE_IP = '10.0.146.192';
 var TEST_EXCH_PUBLIC_IP = '54.154.185.161';
@@ -18,18 +19,16 @@ global.socket.connect(PORT, HOST, function() {
     var helloMsg = JSON.stringify({type: 'hello', team: TEAM_NAME});
     global.send(helloMsg);
 
+    trader.dumbTrader();
     //global.buyPosition('FOO',54342, 142);
-    global.sellPosition('FOO', 53, 226);
+    //global.sellPosition('FOO', 53, 226);
 });
 
 
 // Add a 'data' event handler for the client socket
 // data is what the server sent to this socket
 global.socket.on('data', function(unparsed_data) {
-    console.log("UNPARSED DATA OPEN\n");
-    console.log(unparsed_data);
-    console.log("UNPARSED DATA CLOSE\n");
-	global.logPosition();
+    global.logPosition();
     var lines = unparsed_data.toString().split('\n');
     for (var i =0; i != lines.length; ++i){
         try {
